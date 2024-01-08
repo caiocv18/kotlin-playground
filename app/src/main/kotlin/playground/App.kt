@@ -1,23 +1,25 @@
 package playground
 
 fun main() {
+    /*
+    Desafio
+    Faça um programa que receba a média de um aluno e imprima o seguinte:
     
-    val usuario1 = Usuario(nome = "Caio Vinicius", senha = "MINHASENHA")
-    println(usuario1)
+    Caso a média seja < 5 imprima "REP";
+    Caso a média seja >= 5 e < 7 imprima "REC";
+    Caso a média seja >7 imprima "APR".
+    Entrada
+    A entrada consiste em vários arquivos de teste, cada um com uma linha, que conterá o valor da média do aluno. Conforme mostrado no exemplo de entrada a seguir.
     
-    val conteudo1 = ConteudoEducacional(nome = "Kotlin para iniciantes", duracao = 40, Nivel.BASICO)
-    val conteudo2 = ConteudoEducacional(nome = "Kotlin para intermediários", duracao = 40, Nivel.INTERMEDIARIO)
-    val conteudo3 = ConteudoEducacional(nome = "Kotlin para avançados", duracao = 40, Nivel.DIFICIL)
+    Saída
+    Para cada arquivo da entrada, terá um arquivo de saída. E como mencionado no Desafio, será gerado uma linha com a palavra "Reprovado" caso sua média seja < 5, "Recuperação" caso sua média seja >= 5 e < 7 e "Aprovado" caso a média seja > 7. Use o exemplo abaixo para clarear o que está sendo pedido.
+    */
     
-    val listaDeConteudos : List<ConteudoEducacional> = listOf(conteudo1, conteudo2, conteudo3)
-    
-    val formacao = Formacao(nome = "Kotlin do iniciante ao avançado", conteudos = listaDeConteudos)
-    
-    println(formacao)
-    
-    formacao.matricular(usuario1)
-    println(formacao.inscritos)
-    
-    //TODO("Analise as classes modeladas para este domínio de aplicação e pense em formas de evoluí-las.")
-    //TODO("Simule alguns cenários de teste. Para isso, crie alguns objetos usando as classes em questão.")
+    val media = readln().toDouble()
+
+    when {
+        media < 5 -> println("REP")
+        media in 5.0..6.99 -> println("REC")
+        media > 7 -> println("APR")
+    }
 }
