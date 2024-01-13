@@ -3,55 +3,49 @@ package playground
 /*
 
 Desafio
-Os algarismos romanos são representados por sete símbolos diferentes: I, V, X, L, C, D e M. Cada um com seu respectivo valor:
+Faça um programa que calcule e imprima o salário a ser transferido para um funcionário. Para realizar o calculo, primeiro receba o valor do salário bruto (valorSalario) e adicional dos benefícios (valorBeneficios). Por fim, o salário a ser transferido é calculado da seguinte maneira:
 
-I : 1
-V : 5
-X : 10
-L : 50
-C : 100
-D : 500
-M : 1000
+(valorSalario - valorImpostos) + valorBeneficios
 
-Eles são geralmente escritos do maior para o menor. Porém, para escrevermos “4” não usamos “IIII”, mas sim “IV” porque 5 - 1 = 4.
+Para calcular o valorImpostos, seguem as aliquotas (baseadas no valor do salário bruto):
+
+    De R$ 0.00 a R$ 1100.00 = 5.00%
+    De R$ 1100.01 a R$ 2500.00 = 10.00%
+    Maior que R$ 2500.00 = 15.00%
 
 Entrada
-Você receberá uma entrada em numeral romano.
+A entrada consiste em vários arquivos de teste, que conterá o valor do salário bruto (valorSalario) e adicional dos benefícios (valorBeneficios). Conforme mostrado no exemplo de entrada a seguir.
+
 Saída
-Você deverá imprimir o numeral romano convertido para um número inteiro.
+Para cada conjunto de Entradas (valorSalario e valorBeneficios), deverá ser calculada uma Saída. Para isso, basta imprimir uma linha com o resultado da seguinte fórmula:
+
+saida = (valorSalario - valorImpostos) + valorBeneficios
+
+Use o exemplo abaixo para entender melhor a formatação das Entradas e Saída.
 
 Exemplos
 A tabela abaixo apresenta exemplos com alguns dados de entrada e suas respectivas saídas esperadas. Certifique-se de testar seu programa com esses exemplos e com outros casos possíveis.
+
 */
 
-fun main() {
-    val numeroRomano: String? = readLine()
-
-    val numerosRomanos = mapOf(
-        'I' to 1,
-        'V' to 5,
-        'X' to 10,
-        'L' to 50,
-        'C' to 100,
-        'D' to 500,
-        'M' to 1000
-    )
-
-    var resultado = 0
-
-    for (i in numeroRomano!!.indices) {
-        val atual = numerosRomanos.getValue(numeroRomano[i])
-        val proximo = when (i + 1) {
-            numeroRomano.length -> 0
-            else -> numerosRomanos.getValue(numeroRomano[i + 1])
+object ReceitaFederal {
+    fun calcularImposto(salario: Double): Double {
+        val aliquota = when {
+            (salario in 0.0..1100.0) -> 0.05
+            (salario > 1100 && salario <= 2200) -> 0.10
+            (salario > 2200) -> 0.15
+            else -> throw IllegalArgumentException("Salário não pode ser negativo.")
         }
-
-        if (atual < proximo) {
-            resultado -= atual
-        } else {
-            resultado += atual
-        }
+        return aliquota * salario
     }
+}
 
-    print(resultado)
+fun main() {
+    val valorSalario = readln().toDouble()
+    val valorBeneficios = readln().toDouble()
+
+    val valorImposto = ReceitaFederal.calcularImposto(valorSalario)
+    val saida = valorSalario - valorImposto + valorBeneficios
+
+    println(String.format("%.2f", saida))
 }
