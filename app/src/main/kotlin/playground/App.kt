@@ -1,25 +1,43 @@
 package playground
 
-fun main() {
-    /*
-    Desafio
-    Faça um programa que receba a média de um aluno e imprima o seguinte:
-    
-    Caso a média seja < 5 imprima "REP";
-    Caso a média seja >= 5 e < 7 imprima "REC";
-    Caso a média seja >7 imprima "APR".
-    Entrada
-    A entrada consiste em vários arquivos de teste, cada um com uma linha, que conterá o valor da média do aluno. Conforme mostrado no exemplo de entrada a seguir.
-    
-    Saída
-    Para cada arquivo da entrada, terá um arquivo de saída. E como mencionado no Desafio, será gerado uma linha com a palavra "Reprovado" caso sua média seja < 5, "Recuperação" caso sua média seja >= 5 e < 7 e "Aprovado" caso a média seja > 7. Use o exemplo abaixo para clarear o que está sendo pedido.
-    */
-    
-    val media = readln().toDouble()
+/*
 
-    when {
-        media < 5 -> println("REP")
-        media in 5.0..6.99 -> println("REC")
-        media > 7 -> println("APR")
+Desafio
+Geronimo acredita que perde muito tempo lembrando qual número do mês representa cada um deles. Ele precisa de um programa que mude os meses do ano do calendário do celular dele para facilitar e agilizar a leitura. Ajude-o e faça um programa que, com uma determinada entrada de uma data, retorne essa data com o mês escrito por extenso.
+
+Entrada
+As entradas serão datas em formato numeral. O dia ou mês que possuirem somente um digito, terão um 0 (zero) na frente.
+
+Saida
+As saídas serão as mesmas datas da entrada porém, com o mês escrito por extenso. O mês deve ter a primeira letra em maiúsculo.
+
+Exemplos
+A tabela abaixo apresenta exemplos com alguns dados de entrada e suas respectivas saídas esperadas. Certifique-se de testar seu programa com esses exemplos e com outros casos possíveis.
+
+*/
+
+fun main() {
+    val entrada: String? = readLine()
+
+    // Utiliza o conceito de "destructuring" para atribuir cada parte da data (dia/mes/ano).
+    // Referência: https://kotlinlang.org/docs/destructuring-declarations.html
+    val (dia, mes, ano) = entrada!!.split("/")
+
+    val mesPorExtenso = when (mes.toInt()) {
+        1 -> "Janeiro"
+        2 -> "Fevereiro"
+        3 -> "Marco"
+        4 -> "Abril"
+        5 -> "Maio"
+        6 -> "Junho"
+        7 -> "Julho"
+        8 -> "Agosto"
+        9 -> "Setembro"
+        10 -> "Outubro"
+        11 -> "Novembro"
+        12 -> "Dezembro"
+        else -> "Mês Inválido!"
     }
+
+    println("$dia de $mesPorExtenso de $ano")
 }
