@@ -3,41 +3,55 @@ package playground
 /*
 
 Desafio
-Geronimo acredita que perde muito tempo lembrando qual número do mês representa cada um deles. Ele precisa de um programa que mude os meses do ano do calendário do celular dele para facilitar e agilizar a leitura. Ajude-o e faça um programa que, com uma determinada entrada de uma data, retorne essa data com o mês escrito por extenso.
+Os algarismos romanos são representados por sete símbolos diferentes: I, V, X, L, C, D e M. Cada um com seu respectivo valor:
+
+I : 1
+V : 5
+X : 10
+L : 50
+C : 100
+D : 500
+M : 1000
+
+Eles são geralmente escritos do maior para o menor. Porém, para escrevermos “4” não usamos “IIII”, mas sim “IV” porque 5 - 1 = 4.
 
 Entrada
-As entradas serão datas em formato numeral. O dia ou mês que possuirem somente um digito, terão um 0 (zero) na frente.
-
-Saida
-As saídas serão as mesmas datas da entrada porém, com o mês escrito por extenso. O mês deve ter a primeira letra em maiúsculo.
+Você receberá uma entrada em numeral romano.
+Saída
+Você deverá imprimir o numeral romano convertido para um número inteiro.
 
 Exemplos
 A tabela abaixo apresenta exemplos com alguns dados de entrada e suas respectivas saídas esperadas. Certifique-se de testar seu programa com esses exemplos e com outros casos possíveis.
-
 */
 
 fun main() {
-    val entrada: String? = readLine()
+    val numeroRomano: String? = readLine()
 
-    // Utiliza o conceito de "destructuring" para atribuir cada parte da data (dia/mes/ano).
-    // Referência: https://kotlinlang.org/docs/destructuring-declarations.html
-    val (dia, mes, ano) = entrada!!.split("/")
+    val numerosRomanos = mapOf(
+        'I' to 1,
+        'V' to 5,
+        'X' to 10,
+        'L' to 50,
+        'C' to 100,
+        'D' to 500,
+        'M' to 1000
+    )
 
-    val mesPorExtenso = when (mes.toInt()) {
-        1 -> "Janeiro"
-        2 -> "Fevereiro"
-        3 -> "Marco"
-        4 -> "Abril"
-        5 -> "Maio"
-        6 -> "Junho"
-        7 -> "Julho"
-        8 -> "Agosto"
-        9 -> "Setembro"
-        10 -> "Outubro"
-        11 -> "Novembro"
-        12 -> "Dezembro"
-        else -> "Mês Inválido!"
+    var resultado = 0
+
+    for (i in numeroRomano!!.indices) {
+        val atual = numerosRomanos.getValue(numeroRomano[i])
+        val proximo = when (i + 1) {
+            numeroRomano.length -> 0
+            else -> numerosRomanos.getValue(numeroRomano[i + 1])
+        }
+
+        if (atual < proximo) {
+            resultado -= atual
+        } else {
+            resultado += atual
+        }
     }
 
-    println("$dia de $mesPorExtenso de $ano")
+    print(resultado)
 }
