@@ -1,55 +1,53 @@
 package playground
 
+import java.util.*
+
 /*
 
 Descrição
-O padrão de projeto Adapter é um padrão de projeto estrutural que permite que objetos com interfaces incompatíveis trabalhem juntos. Ele atua como um intermediário, adaptando a interface de uma classe para outra interface esperada pelo cliente.
+As Extension Functions, ou Funções de Extensão, são recursos poderosos disponíveis em linguagens de programação que permitem adicionar métodos a classes existentes sem a necessidade de modificar o código-fonte original dessas classes. Isso facilita a criação de novas funcionalidades ou comportamentos para tipos de dados já existentes, mesmo quando você não tem acesso ao código fonte original desses tipos.
 
-Neste desafio, você deverá implementar um conversor de moedas que permitirá que valores monetários sejam convertidos de dólares americanos (USD) para euros (EUR). Embora exista uma taxa de conversão direta de 1 USD = 0.85 EUR, o nosso sistema inicialmente só suportava a conversão de USD para libras esterlinas (GBP). Utilizando o padrão Adapter, você deve adaptar esse sistema antigo para fornecer a nova funcionalidade de conversão direta para EUR, usando a conversão intermediária para GBP.
+Neste desafio, com foco em um sistema de gerenciamento de livros para uma biblioteca digital, você deve implementar uma solução que permita gerar um "slug" único para representar os dados de um livro. Um "slug" é uma versão simplificada e amigável para URLs de um texto, com espaços substituídos por traços (-) e caracteres especiais removidos. A solução requer que você crie uma função de extensão generateSlug() para a classe String que fará essa transformação.
+
+Funcionalidade a ser implementada:
+
+generateSlug(): Crie uma função de extensão chamada generateSlug() para a classe String. A função deve gerar um "slug" para a string fornecida, removendo espaços e caracteres especiais, substituindo-os por traços.
 
 Entrada
-Um valor em dólares americanos USD (Double).
+A entrada consistirá em duas strings: o título e o autor de um livro.
 
 Saída
-O valor convertido para euros EUR (Double) usando o adaptador.
-
-Taxa de conversão direta (para referência):
-1 USD = 0.85 EUR
-
-Taxas de conversão para a adaptação:
-1 USD para GBP = 0.80
-1 GBP para EUR = 1.0625
+Imprima o "slug" gerado para o livro, no seguinte padrão:
+Slug gerado para o livro:
+nome-livro-separado-por-ifens_nome-autor-separado-por-ifens
 
 Nota:
-O padrão Adapter é uma ferramenta valiosa para lidar com incompatibilidades de interface e integrar componentes heterogêneos. No entanto, é importante avaliar cuidadosamente sua utilização para garantir que os benefícios superem os possíveis custos em termos de complexidade e desempenho.
+O uso de extension functions tem seus pontos positivos, como a extensibilidade e organização do código, mas também apresenta desafios, como a possível confusão e a separação da lógica. A solução eficiente depende da linguagem de programação escolhida e das práticas de programação adotadas.
 
-Caso queira saber mais sobre o Design Pattern Adapter:
-https://refactoring.guru/pt-br/design-patterns/adapter
+Saiba mais sobre Extension Functions em Kotlin:
+https://kotlinlang.org/docs/extensions.html#extension-functions
 
 */
 
-// Antiga classe de conversão que só suporta a conversão de USD para GBP
-class OldCurrencyConverter {
-    fun convertUSDtoGBP(amount: Double): Double {
-        return amount * 0.80 // 80% do valor em USD
-    }
-}
-
-// Novo adaptador que usa a antiga conversão e aplica a taxa adicional de GBP para EUR
-class CurrencyAdapter(private val oldConverter: OldCurrencyConverter) {
-    fun convertUSDtoEUR(amount: Double): Double {
-        val usdToGbp = oldConverter.convertUSDtoGBP(amount)
-        return usdToGbp * 1.0625
-    }
-}
-
 fun main() {
-    val input = readlnOrNull()?.toDoubleOrNull() ?: return
-    val oldConverter = OldCurrencyConverter()
-    val adapter = CurrencyAdapter(oldConverter)
+    val title = readlnOrNull() ?: ""
+    val author = readlnOrNull() ?: ""
 
-    val amountInEUR = adapter.convertUSDtoEUR(input)
+    val slugTitle = title.generateSlug()
+    val slugAuthor = author.generateSlug()
 
-    println("USD: $input")
-    println("EUR: $amountInEUR")
+    println("Slug gerado para o livro:")
+    println("${slugTitle}_$slugAuthor")
+}
+
+fun String.generateSlug(): String {
+    return this.lowercase(Locale.getDefault())
+                .replace(" ", "-")
+                .replace("[áàâã]".toRegex(), "a")
+                .replace("[éèê]".toRegex(), "e")
+                .replace("[íìî]".toRegex(), "i")
+                .replace("[óòôõ]".toRegex(), "o")
+                .replace("[úùû]".toRegex(), "u")
+                .replace("ñ", "n")
+                .replace("[^a-z0-9\\-]".toRegex(), "")
 }
