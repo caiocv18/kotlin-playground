@@ -1,53 +1,72 @@
 package playground
 
-import java.util.*
-
 /*
 
 Descrição
-As Extension Functions, ou Funções de Extensão, são recursos poderosos disponíveis em linguagens de programação que permitem adicionar métodos a classes existentes sem a necessidade de modificar o código-fonte original dessas classes. Isso facilita a criação de novas funcionalidades ou comportamentos para tipos de dados já existentes, mesmo quando você não tem acesso ao código fonte original desses tipos.
+No mundo da programação, frequentemente enfrentamos situações onde múltiplas tarefas precisam ser executadas simultaneamente para otimizar o tempo de resposta ou processamento. Um exemplo comum é o download de múltiplos arquivos da internet.
 
-Neste desafio, com foco em um sistema de gerenciamento de livros para uma biblioteca digital, você deve implementar uma solução que permita gerar um "slug" único para representar os dados de um livro. Um "slug" é uma versão simplificada e amigável para URLs de um texto, com espaços substituídos por traços (-) e caracteres especiais removidos. A solução requer que você crie uma função de extensão generateSlug() para a classe String que fará essa transformação.
+Para este desafio, suponha que você tenha uma lista de URLs que deseja "baixar". Seu objetivo é simular o download desses arquivos de forma paralela e imprimir o tamanho de cada URL após seu "download" ter sido disparado. Para simplificar, cada URL leva exatamente 1 segundo para ser "baixado".
 
-Funcionalidade a ser implementada:
+Requisitos:
 
-generateSlug(): Crie uma função de extensão chamada generateSlug() para a classe String. A função deve gerar um "slug" para a string fornecida, removendo espaços e caracteres especiais, substituindo-os por traços.
-
+Defina uma lista de URLs que você deseja "baixar".
+Crie uma função para simular o "download" de uma URL. Essa função deve aceitar uma URL como entrada e retornar o tamanho da URL.
+Implemente uma lógica que permita iniciar o "download" de várias URLs em paralelo.
+Imprima o tamanho de cada URL na ordem em que foram inseridas.
 Entrada
-A entrada consistirá em duas strings: o título e o autor de um livro.
+A entrada consiste em uma lista de URLs, uma em cada linha. Uma linha vazia indica o fim da lista.
 
 Saída
-Imprima o "slug" gerado para o livro, no seguinte padrão:
-Slug gerado para o livro:
-nome-livro-separado-por-ifens_nome-autor-separado-por-ifens
+A saída deve mostrar o tamanho de cada URL na ordem em que foram inseridas, seguido pelo "Tempo total", que é simplesmente a contagem de URLs (por mais conta-intuitivo que pareça 😁):
+Iniciando downloads...
+Arq1: $tamanhoUrl1
+Arq2: $tamanhoUrl2
+Tempo total: $quantidadeDeUrls
 
-Nota:
-O uso de extension functions tem seus pontos positivos, como a extensibilidade e organização do código, mas também apresenta desafios, como a possível confusão e a separação da lógica. A solução eficiente depende da linguagem de programação escolhida e das práticas de programação adotadas.
-
-Saiba mais sobre Extension Functions em Kotlin:
-https://kotlinlang.org/docs/extensions.html#extension-functions
+Nota: A simulação de download é uma forma simplificada de entender como tarefas paralelas podem ser disparadas e como os resultados podem ser coletados de volta na ordem desejada.
 
 */
 
 fun main() {
-    val title = readlnOrNull() ?: ""
-    val author = readlnOrNull() ?: ""
+    val urls = mutableListOf<String>()
 
-    val slugTitle = title.generateSlug()
-    val slugAuthor = author.generateSlug()
+    while (true) {
+        val input = readlnOrNull() ?: break
+        if (input.isBlank()) break
+        urls.add(input)
+    }
 
-    println("Slug gerado para o livro:")
-    println("${slugTitle}_$slugAuthor")
+    println("Iniciando downloads...")
+
+    // Cria uma lista de Pair (indice, tamanho)
+    val results = mutableListOf<Pair<Int, Int>>()
+
+    // Em Kotlin, Coroutines são uma opção mais idiomática e simples para operações assíncronas
+    // e paralelas em comparação com Threads. No entanto, nosso editor de código atual
+    // ainda não suporta Coroutines. Para mais detalhes, veja a documentação oficial:
+    // https://kotlinlang.org/docs/coroutines-overview.html
+    val threads = urls.mapIndexed { index, url ->
+        Thread {
+            val length = openLink(url)
+            synchronized(results) {
+                results.add(Pair(index, length))
+            }
+        }
+    }
+
+    
+    threads.forEach { it.start() }
+    threads.forEach { it.join() }
+
+
+    // Ordena os resultados por índice para imprimir na ordem correta
+    results.sortedBy { it.first }.forEachIndexed { idx, result ->
+        println("Arq${idx + 1}: ${result.second}")
+    }
+    println("Tempo total: ${urls.size}")
 }
 
-fun String.generateSlug(): String {
-    return this.lowercase(Locale.getDefault())
-                .replace(" ", "-")
-                .replace("[áàâã]".toRegex(), "a")
-                .replace("[éèê]".toRegex(), "e")
-                .replace("[íìî]".toRegex(), "i")
-                .replace("[óòôõ]".toRegex(), "o")
-                .replace("[úùû]".toRegex(), "u")
-                .replace("ñ", "n")
-                .replace("[^a-z0-9\\-]".toRegex(), "")
+// Simula a abertura de uma URL, retornando seu tamanho.
+fun openLink(url: String): Int {
+    return url.length
 }
