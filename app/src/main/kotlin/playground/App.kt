@@ -3,85 +3,87 @@ package playground
 /*
 
 Descrição
-O Singleton é uma abordagem de design de software que visa assegurar a existência de apenas uma instância de uma classe e fornecer um ponto centralizado para acessá-la. Isso é especialmente benéfico em contextos nos quais é desejável manter uma única ocorrência de uma classe responsável pelo controle de um recurso compartilhado, como configurações, conexões de banco de dados ou caches.
+O Design Pattern "Builder" é uma técnica utilizada para criar objetos complexos passo a passo, separando o processo de construção da representação final do objeto. Isso ajuda a melhorar a legibilidade e a flexibilidade do código, especialmente quando você precisa criar objetos com muitos parâmetros ou configurações diferentes.
 
-Neste desafio, você deve criar um sistema de gerenciamento de usuários que permita adicionar e listar usuários. Você tem a opção de implementar o padrão Singleton para garantir que haja apenas uma instância do gerenciador de usuários em toda a aplicação. No entanto, a implementação do padrão Singleton é opcional e você pode optar por seguir uma abordagem diferente para resolver o desafio, se preferir.
+Neste desafio, buscando soluções para um problema de negócios em uma plataforma de e-commerce, é necessário melhorar a forma como os pedidos personalizados são tratados. Você tem a opção de implementar a solução utilizando o padrão Builder para criar pedidos de forma mais eficiente e organizada, ou seguir uma abordagem alternativa sem a necessidade de utilizar o padrão Builder.
 
-Especificações do Desafio:
+Detalhamento da tarefa:
 
-Crie uma classe User com os seguintes atributos: id (inteiro) e name (string).
-Implemente uma classe UserManager que siga o padrão Singleton. Esta classe deve possuir as seguintes funcionalidades:
-a. Adicionar um novo usuário ao sistema, recebendo o nome como entrada.
-b. Listar todos os usuários cadastrados.
-No programa principal (main), siga as etapas abaixo:
-a. Solicite ao usuário a quantidade de usuários que deseja cadastrar.
-b. Peça ao usuário para informar os nomes dos usuários, um por linha.
-c. Após receber os nomes e cadastrar os usuários, liste os usuários cadastrados.
+Capture o nome do cliente.
+Solicite ao usuário a quantidade de produtos que deseja adicionar ao pedido.
+Para cada produto, capture o nome, preço e quantidade.
+Capture o endereço de entrega.
+Calcule o total do pedido somando o preço de cada produto multiplicado pela quantidade.
+Imprima os detalhes do pedido, incluindo os produtos, seus preços, quantidades, total a pagar e endereço de entrega.
 Entrada
-Um número inteiro representando a quantidade de usuários que o usuário deseja cadastrar.
+O programa deve receber as seguintes informações do usuário:
 
-Para cada usuário a ser cadastrado, uma string contendo o nome do usuário.
-
+Nome do cliente (string);
+Lista de produtos a serem incluídos no pedido (cada produto possui nome, preço e quantidade);
+Endereço de entrega (string).
 Saída
-Uma lista com os nomes dos usuários cadastrados.Descrição
-O Singleton é uma abordagem de design de software que visa assegurar a existência de apenas uma instância de uma classe e fornecer um ponto centralizado para acessá-la. Isso é especialmente benéfico em contextos nos quais é desejável manter uma única ocorrência de uma classe responsável pelo controle de um recurso compartilhado, como configurações, conexões de banco de dados ou caches.
+Após receber todas as informações do usuário, o programa deve criar um objeto de pedido personalizado usando o padrão Builder e imprimir os detalhes do pedido construído, incluindo o total a pagar.
 
-Neste desafio, você deve criar um sistema de gerenciamento de usuários que permita adicionar e listar usuários. Você tem a opção de implementar o padrão Singleton para garantir que haja apenas uma instância do gerenciador de usuários em toda a aplicação. No entanto, a implementação do padrão Singleton é opcional e você pode optar por seguir uma abordagem diferente para resolver o desafio, se preferir.
-
-Especificações do Desafio:
-
-Crie uma classe User com os seguintes atributos: id (inteiro) e name (string).
-Implemente uma classe UserManager que siga o padrão Singleton. Esta classe deve possuir as seguintes funcionalidades:
-a. Adicionar um novo usuário ao sistema, recebendo o nome como entrada.
-b. Listar todos os usuários cadastrados.
-No programa principal (main), siga as etapas abaixo:
-a. Solicite ao usuário a quantidade de usuários que deseja cadastrar.
-b. Peça ao usuário para informar os nomes dos usuários, um por linha.
-c. Após receber os nomes e cadastrar os usuários, liste os usuários cadastrados.
-Entrada
-Um número inteiro representando a quantidade de usuários que o usuário deseja cadastrar.
-
-Para cada usuário a ser cadastrado, uma string contendo o nome do usuário.
-
-Saída
-Uma lista com os nomes dos usuários cadastrados.
+Para este desafio, considere apenas uma casa decimal após a vírgula.
 
 Nota:
-A implementação do padrão Singleton traz uma abordagem centralizada, com uma única instância do gerenciador de entidades, favorecendo a consistência dos dados e facilitando o acesso global. Por outro lado, optar por não usar o padrão permite maior flexibilidade, possibilitando várias instâncias independentes. A escolha depende das demandas do projeto, design e manutenção. Isso garante adaptabilidade entre diferentes linguagens ou contextos.
-
-Caso queira saber mais sobre o Design Pattern Singleton:
-https://refactoring.guru/pt-br/design-patterns/singleton
+O padrão Builder é uma abordagem valiosa quando se trata de criar objetos complexos com diferentes configurações. No entanto, deve-se considerar a relação entre a complexidade do problema e a necessidade de aplicar o padrão, especialmente em cenários mais simples. A decisão de usar ou não o padrão Builder dependerá das necessidades específicas do projeto e das características do sistema em que está sendo aplicado.
+Caso queira saber mais sobre o Design Pattern Builder:
+https://refactoring.guru/pt-br/design-patterns/builder
 
 */
 
-class User(val id: Int, val name: String)
+class Product(val name: String, val price: Double, val quantity: Int)
 
-/*
- * No Kotlin, a declaração de um objeto (por meio da palavra-chave object)
- * é uma maneira concisa e eficaz de implementar o padrão Singleton.
- */
-object UserManager {
+class CustomOrder private constructor(
+    private val customerName: String,
+    private val products: List<Product>,
+    private val total: Double,
+    private val deliveryAddress: String
+) {
+    /** Classe interna para "linkar" o Bulder com a classe CustomOrder **/
+    class Builder {
+        private var customerName = ""
+        private var products = mutableListOf<Product>()
+        private var deliveryAddress = ""
 
-    private val users = mutableListOf<User>()
+        fun setCustomerName(name: String) = apply { customerName = name }
+        fun addProduct(product: Product) = apply { products.add(product) }
+        fun setDeliveryAddress(address: String) = apply { deliveryAddress = address }
 
-    fun addUser(id: Int, name: String) {
-        users.add(User(id, name))
+        fun build(): CustomOrder {
+            val total = products.sumOf { it.price * it.quantity }
+            return CustomOrder(customerName, products, total, deliveryAddress)
+        }
     }
 
-    fun listUsers() {
-        users.forEach { user ->
-            println("${user.id} - ${user.name}")
+    fun printReceipt() {
+        println(this.customerName)
+        this.products.forEachIndexed { index, product ->
+            println("${index + 1}. ${product.name} | ${product.price} | ${product.quantity}")
         }
+        println("Total: ${this.total}")
+        println("End: ${this.deliveryAddress}")
     }
 }
 
 fun main() {
-    val quantity = readlnOrNull()?.toIntOrNull() ?: 0
+    val customerName = readlnOrNull() ?: ""
 
-    for (i in 1..quantity) {
-        val name = readlnOrNull() ?: ""
-        UserManager.addUser(i, name)
+    val orderBuilder = CustomOrder.Builder().setCustomerName(customerName)
+
+    val numProducts = readlnOrNull()?.toIntOrNull() ?: 0
+    for (i in 1..numProducts) {
+        val productName = readlnOrNull() ?: ""
+        val productPrice = readlnOrNull()?.toDoubleOrNull() ?: 0.0
+        val productQuantity = readlnOrNull()?.toIntOrNull() ?: 0
+
+        orderBuilder.addProduct(Product(productName, productPrice, productQuantity))
     }
 
-    UserManager.listUsers()
+    val deliveryAddress = readlnOrNull() ?: ""
+
+    val customOrder = orderBuilder.setDeliveryAddress(deliveryAddress).build()
+
+    customOrder.printReceipt()
 }
